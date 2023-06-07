@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const CreatePost = ({ token }) => {
+const EditPost = ({ postId, token }) => {
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+
+    useEffect(() => {
+        const fetchPost = async () => {
+            try {
+                const response = await axios.get(
+                    `https://brivity-react-exercise.herokuapp.com/posts/${postId}`,
+                    {
+                        headers: { Authorization: `Bearer ${token}` },
+                    }
+                );
+                const { title, content } = response.data.post;
+                setTitle(title);
+                setContent(content);
+            } catch (error) {
+                console.error('Failed to fetch post', error);
+            }
+        };
+
+        fetchPost();
+    }, [postId, token]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post(
-                'https://brivity-react-exercise.herokuapp.com/posts',
+            await axios.patch(
+                `https://brivity-react-exercise.herokuapp.com/posts/${postId}`,
                 {
                     post: {
                         title,
@@ -20,16 +40,15 @@ const CreatePost = ({ token }) => {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            setTitle('');
-            setContent('');
+            setEditing(false);
         } catch (error) {
-            console.error('Failed to create post', error);
+            console.error('Failed to edit post', error);
         }
     };
 
     return (
         <div>
-            <h2>Create Post</h2>
+            <h2>Edit Post</h2>
             <form onSubmit={handleSubmit}>
                 <input
                     type="text"
@@ -44,10 +63,10 @@ const CreatePost = ({ token }) => {
                     onChange={(e) => setContent(e.target.value)}
                 ></textarea>
                 <br />
-                <button type="submit">Create Post</button>
+                <button type="submit">Update Post</button>
             </form>
         </div>
     );
 };
 
-export default CreatePost;
+export default EditPost;

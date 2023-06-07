@@ -32,7 +32,7 @@ function App() {
   return (
     <div>
       <Router>
-        <Header loggedIn={loggedIn} handleSignOut={handleSignOut} />
+        <Header isAuthenticated={loggedIn} handleLogout={handleSignOut} />
         <Routes>
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
