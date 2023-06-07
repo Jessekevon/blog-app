@@ -6,6 +6,7 @@ const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirectToPosts, setRedirectToPosts] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,10 +22,16 @@ const SignIn = () => {
                 payload
             );
             const token = response.headers['authorization'];
-            localStorage.setItem('token', token);
-            setRedirectToPosts(true);
+
+            if (token) {
+                localStorage.setItem('token', token);
+                setRedirectToPosts(true);
+            } else {
+                setError('Authentication failed. Please try again.');
+            }
         } catch (error) {
             console.error('Sign-in failed', error.response.data);
+            setError('Sign-in failed. Please check your credentials.');
         }
     };
 

@@ -9,6 +9,12 @@ const CreatePost = ({ token }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        if (!token) {
+            // Handle the case where the token is missing
+            setError('Authentication failed. Please sign in again.');
+            return;
+        }
+
         try {
             const response = await axios.post(
                 'https://brivity-react-exercise.herokuapp.com/posts',

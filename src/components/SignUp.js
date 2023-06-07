@@ -7,6 +7,7 @@ const SignUp = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [redirectToPosts, setRedirectToPosts] = useState(false);
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,12 +23,17 @@ const SignUp = () => {
                 'https://brivity-react-exercise.herokuapp.com/users',
                 payload
             );
-            const token = response.headers.authorization.split(' ')[1];
-            const userName = response.data.user.display_name;
-            localStorage.setItem('token', token);
-            setRedirectToPosts(true);
+
+            if (response && response.headers && response.headers.authorization) {
+                const token = response.headers.authorization;
+                localStorage.setItem('token', token);
+                setRedirectToPosts(true);
+            } else {
+                setError('Authentication failed. Please try again.');
+            }
         } catch (error) {
-            console.error('Sign-up failed', error.response.data);
+            console.error('Sign-up failed', error);
+            setError('Sign-up failed. Please check your credentials and try again.');
         }
     };
 
