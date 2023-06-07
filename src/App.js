@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [jwtToken, setJwtToken] = useState('');
+  const [userName, setUserName] = useState('');
+  const [redirectToPosts, setRedirectToPosts] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -18,6 +20,7 @@ function App() {
   const handleSignOut = () => {
     setLoggedIn(false);
     setJwtToken('');
+    setUserName('');
     localStorage.removeItem('token');
   };
 
@@ -25,7 +28,6 @@ function App() {
     const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [redirectToPosts, setRedirectToPosts] = useState(false); // Add state for redirection
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -42,12 +44,12 @@ function App() {
           payload
         );
         const token = response.headers.authorization.split(' ')[1];
-        localStorage.setItem('token', token); // Save the token to local storage
-        setJwtToken(token); // Update the token state
-        setLoggedIn(true); // Update the loggedIn state
-        // Redirect to the page where users can create and view posts
-        return <Navigate to="/posts" replace />;
-        setRedirectToPosts(true); // Set the state to redirect to posts page
+        const userName = response.data.user.display_name; // Get the user's name
+        localStorage.setItem('token', token);
+        setJwtToken(token);
+        setLoggedIn(true);
+        setUserName(userName); // Update the user's name
+        setRedirectToPosts(true);
       } catch (error) {
         console.error('Sign-up failed', error.response.data);
       }
@@ -119,7 +121,7 @@ function App() {
   const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [redirectToPosts, setRedirectToPosts] = useState(false);
+    const [redirectToPosts, setRedirectToPosts] = useState(false); // Add state for redirection
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -138,7 +140,7 @@ function App() {
         localStorage.setItem('token', token);
         setJwtToken(token);
         setLoggedIn(true);
-        setRedirectToPosts(true);
+        setRedirectToPosts(true); // Set the state to redirect to posts page
       } catch (error) {
         console.error('Sign-in failed', error.response.data);
       }
@@ -277,28 +279,56 @@ function App() {
   };
 
   return (
-    <Router>
-      <div>
-        <h1>Blogging Platform</h1>
+    <div>
+      <Router>
+        <nav>
+          <ul>
+            {!loggedIn ? (
+              <>
+                <li>
+                  <Link to="/signup">Sign Up</Link>
+                </li>
+                <li>
+                  <Link to="/signin">Sign In</Link>
+                </li>
+              </>
+            ) : (
+              <>
+                <li>
+                  <Link to="/create">Create Post</Link>
+                </li>
+                <li>
+                  <Link to="/posts">View Posts</Link>
+                </li>
+                <li>
+                  <button onClick={handleSignOut}>Sign Out</button>
+                </li>
+              </>
+            )}
+          </ul>
+        </nav>
         <Routes>
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
-          {loggedIn ? (
+          {loggedIn && redirectToPosts && (
             <>
               <Route path="/create" element={<CreatePost token={jwtToken} />} />
               <Route path="/posts" element={<ViewPosts />} />
             </>
-          ) : (
+          )}
+          {!loggedIn ? (
             <Route path="/" element={<Navigate to="/signin" replace />} />
+          ) : (
+            <Route path="/" element={<Navigate to="/posts" replace />} />
           )}
         </Routes>
-        {loggedIn && (
-          <div>
-            <button onClick={handleSignOut}>Sign Out</button>
-          </div>
-        )}
-      </div>
-    </Router>
+      </Router>
+      {loggedIn && (
+        <div>
+          <p>Logged in - {userName}</p>
+        </div>
+      )}
+    </div>
   );
 }
 
