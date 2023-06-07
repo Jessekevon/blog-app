@@ -3,24 +3,29 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import axios from 'axios';
 
 function App() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [jwtToken, setJwtToken] = useState('');
+
   useEffect(() => {
     const token = localStorage.getItem('token');
-
-    // Set the default request headers with the token
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    console.log('Fetched token:', token); // Check the fetched token
+    setJwtToken(token);
+    if (token) {
+      setLoggedIn(true);
+    }
   }, []);
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [token, setToken] = useState('');
 
   const handleSignOut = () => {
     setLoggedIn(false);
-    setToken('');
+    setJwtToken('');
+    localStorage.removeItem('token');
   };
 
   const SignUp = () => {
     const [displayName, setDisplayName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [redirectToPosts, setRedirectToPosts] = useState(false); // Add state for redirection
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -36,16 +41,22 @@ function App() {
           'https://brivity-react-exercise.herokuapp.com/users',
           payload
         );
-        const token = response.data.token;
-        localStorage.setItem('token', token);
-        setToken(token);
-
+        const token = response.headers.authorization.split(' ')[1];
+        localStorage.setItem('token', token); // Save the token to local storage
+        setJwtToken(token); // Update the token state
+        setLoggedIn(true); // Update the loggedIn state
         // Redirect to the page where users can create and view posts
-        window.location.replace('/posts');
+        return <Navigate to="/posts" replace />;
+        setRedirectToPosts(true); // Set the state to redirect to posts page
       } catch (error) {
         console.error('Sign-up failed', error.response.data);
       }
     };
+
+    // Redirect to posts page if redirectToPosts is true
+    if (redirectToPosts) {
+      return <Navigate to="/posts" replace />;
+    }
 
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -108,6 +119,7 @@ function App() {
   const SignIn = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [redirectToPosts, setRedirectToPosts] = useState(false);
 
     const handleSubmit = async (e) => {
       e.preventDefault();
@@ -122,14 +134,19 @@ function App() {
           'https://brivity-react-exercise.herokuapp.com/users/sign_in',
           payload
         );
-        const token = response.data.token;
-        localStorage.setItem('token', token); // Save the token to local storage
-        setToken(token); // Update the token state
-        setLoggedIn(true); // Update the loggedIn state
+        const token = response.headers['authorization'];
+        localStorage.setItem('token', token);
+        setJwtToken(token);
+        setLoggedIn(true);
+        setRedirectToPosts(true);
       } catch (error) {
         console.error('Sign-in failed', error.response.data);
       }
     };
+
+    if (redirectToPosts) {
+      return <Navigate to="/posts" replace />;
+    }
 
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
@@ -191,7 +208,7 @@ function App() {
             content,
           },
           {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${jwtToken}` },
           }
         );
         setTitle('');
@@ -229,15 +246,20 @@ function App() {
 
     const fetchPosts = async () => {
       try {
-        const response = await axios.get('https://brivity-react-exercise.herokuapp.com/posts');
+        const response = await axios.get(
+          'https://brivity-react-exercise.herokuapp.com/posts',
+          {
+            headers: { Authorization: `Bearer ${jwtToken}` },
+          }
+        );
         const { data } = response;
-        setPosts(data);
+        setPosts(data.posts); // Update to set the posts array
       } catch (error) {
         console.error('Failed to fetch posts', error);
       }
     };
 
-    useState(() => {
+    useEffect(() => {
       fetchPosts();
     }, []);
 
@@ -263,7 +285,7 @@ function App() {
           <Route path="/signin" element={<SignIn />} />
           {loggedIn ? (
             <>
-              <Route path="/create" element={<CreatePost token={token} />} />
+              <Route path="/create" element={<CreatePost token={jwtToken} />} />
               <Route path="/posts" element={<ViewPosts />} />
             </>
           ) : (
