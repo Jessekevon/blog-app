@@ -3,48 +3,64 @@ import axios from 'axios';
 
 const CreatePost = ({ token }) => {
     const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+    const [body, setBody] = useState('');
+    const [error, setError] = useState('');
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            await axios.post(
+            const response = await axios.post(
                 'https://brivity-react-exercise.herokuapp.com/posts',
                 {
                     post: {
                         title,
-                        body: content
-                    }
+                        body,
+                    },
                 },
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
             );
+
+            console.log('Created post:', response.data);
+            // Reset the form fields
             setTitle('');
-            setContent('');
+            setBody('');
+            setError('');
         } catch (error) {
-            console.error('Failed to create post', error);
+            if (error.response) {
+                setError(error.response.data.message);
+            } else {
+                setError('An error occurred while creating the post.');
+            }
+            console.log('Failed to create post', error);
         }
     };
 
     return (
         <div>
             <h2>Create Post</h2>
+            {error && <p className="error">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <input
-                    type="text"
-                    placeholder="Title"
-                    value={title}
-                    onChange={(e) => setTitle(e.target.value)}
-                />
-                <br />
-                <textarea
-                    placeholder="Content"
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                ></textarea>
-                <br />
-                <button type="submit">Create Post</button>
+                <div>
+                    <label>Title:</label>
+                    <input
+                        type="text"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <label>Body:</label>
+                    <textarea
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                    ></textarea>
+                </div>
+                <button type="submit">Submit</button>
             </form>
         </div>
     );

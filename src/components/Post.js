@@ -1,10 +1,37 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const API_KEY = 'cLDno3CrKltLF8YOqniPP21W9zwQSokdjiQPyNrwaqKzLjj1hjDUrdwV';
+const API_ENDPOINT = 'https://api.pexels.com/v1/search?query=';
 
 const Post = ({ post, token }) => {
+    const [imageUrl, setImageUrl] = useState('');
+
+    const fetchRandomImage = async () => {
+        try {
+            const response = await axios.get(`${API_ENDPOINT}random`, {
+                headers: {
+                    Authorization: API_KEY,
+                },
+            });
+
+            if (response.data && response.data.photos && response.data.photos.length > 0) {
+                const imageUrl = response.data.photos[0].src.original;
+                setImageUrl(imageUrl);
+            }
+        } catch (error) {
+            console.log('Failed to fetch random image', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchRandomImage();
+    }, []);
+
     return (
-        <div key={post.id} className="bg-white rounded-lg shadow-md">
+        <div className="bg-white rounded-lg shadow-md">
             <img
-                src={post.imageUrl}
+                src={imageUrl}
                 alt={post.title}
                 className="h-48 w-full object-cover rounded-t-lg"
             />
