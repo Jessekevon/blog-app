@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 
-const DeletePost = ({ postId, token }) => {
+const DeletePost = ({ postId, token, onDelete }) => {
     const handleDelete = async () => {
         try {
             await axios.delete(
@@ -10,7 +10,7 @@ const DeletePost = ({ postId, token }) => {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            onDelete();
+            onDelete(); // Call the onDelete function passed as a prop
         } catch (error) {
             console.error('Failed to delete post', error);
         }
@@ -18,8 +18,12 @@ const DeletePost = ({ postId, token }) => {
 
     return (
         <div>
-            <h2>Delete Post</h2>
-            <button onClick={handleDelete}>Delete</button>
+            <button
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-4"
+            >
+                Delete
+            </button>
         </div>
     );
 };

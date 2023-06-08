@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const API_KEY = 'cLDno3CrKltLF8YOqniPP21W9zwQSokdjiQPyNrwaqKzLjj1hjDUrdwV';
 const API_ENDPOINT = 'https://api.pexels.com/v1/search?query=';
 
-const Post = ({ post, token }) => {
+const Post = ({ post }) => {
     const [imageUrl, setImageUrl] = useState('');
 
     const fetchRandomImage = async () => {
@@ -36,7 +37,9 @@ const Post = ({ post, token }) => {
                 className="h-48 w-full object-cover rounded-t-lg"
             />
             <div className="p-6">
-                <h2 className="text-xl font-semibold mb-4">{post.title}</h2>
+                <h2 className="text-xl font-semibold mb-4">
+                    <Link to={`/posts/${post.id}`}>{post.title}</Link>
+                </h2>
                 <p className="text-gray-600">{post.content}</p>
             </div>
         </div>

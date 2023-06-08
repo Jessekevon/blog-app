@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Post from './Post';
 import CreatePost from './CreatePost';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ViewPosts = ({ token }) => {
     const [posts, setPosts] = useState([]);
     const [showCreateForm, setShowCreateForm] = useState(false);
+    const navigate = useNavigate();
 
     const fetchPosts = async () => {
         try {
@@ -55,7 +57,11 @@ const ViewPosts = ({ token }) => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {posts.map((post) => (
-                    <Post key={post.id} post={post} token={token} />
+                    <div key={post.id}>
+                        <Link to={`/posts/${post.id}`}>
+                            <Post post={post} />
+                        </Link>
+                    </div>
                 ))}
             </div>
         </div>

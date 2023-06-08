@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import axios from 'axios';
 import Header from './components/Header';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 import CreatePost from './components/CreatePost';
 import ViewPosts from './components/ViewPosts';
 import HomePage from './components/HomePage';
+import EditPost from './components/EditPost';
+import PostDetails from './components/PostDetails'; // Import the PostDetails component
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -44,27 +45,30 @@ function App() {
               />
               <Route
                 path="/posts"
-                element={<ViewPosts token={jwtToken} />}
+                element={<ViewPosts token={jwtToken} isAuthenticated={loggedIn} />}
+              />
+              <Route
+                path="/edit/:postId"
+                element={<EditPost token={jwtToken} />}
               />
             </>
           )}
           {!loggedIn ? (
             <Route path="/" element={<Navigate to="/sign-in" replace />} />
           ) : (
-            <Route
-              path="/"
-              element={<HomePage token={jwtToken} />}
-            />
+            <>
+              <Route
+                path="/"
+                element={<HomePage token={jwtToken} />}
+              />
+              <Route
+                path="/posts/:post_id" // Add a route for /posts/:post_id
+                element={<PostDetails token={jwtToken} />}
+              />
+            </>
           )}
         </Routes>
       </Router>
-      {loggedIn && (
-        <div>
-          <p className="text-center mt-4 text-gray-600">
-            Logged in - {userName}
-          </p>
-        </div>
-      )}
     </div>
   );
 }

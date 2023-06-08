@@ -33,14 +33,14 @@ const EditPost = ({ postId, token }) => {
                 {
                     post: {
                         title,
-                        body: content
+                        content
                     }
                 },
                 {
                     headers: { Authorization: `Bearer ${token}` },
                 }
             );
-            setEditing(false);
+            // Set any state for editing mode if needed
         } catch (error) {
             console.error('Failed to edit post', error);
         }
