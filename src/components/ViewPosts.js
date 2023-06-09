@@ -3,6 +3,7 @@ import axios from 'axios';
 import Post from './Post';
 import CreatePost from './CreatePost';
 import { Link, useNavigate } from 'react-router-dom';
+import AddComment from './AddComment';
 
 const ViewPosts = ({ token }) => {
     const [posts, setPosts] = useState([]);
@@ -37,6 +38,14 @@ const ViewPosts = ({ token }) => {
         setShowCreateForm(false);
     };
 
+    const handleCommentAdded = (postId, comment) => {
+        setPosts((prevPosts) =>
+            prevPosts.map((post) =>
+                post.id === postId ? { ...post, comments: [...(post.comments || []), comment] } : post
+            )
+        );
+    };
+
     return (
         <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div className="mb-4">
@@ -61,6 +70,11 @@ const ViewPosts = ({ token }) => {
                         <Link to={`/posts/${post.id}`}>
                             <Post post={post} />
                         </Link>
+                        <AddComment
+                            token={token}
+                            postId={post.id}
+                            onCommentAdded={(comment) => handleCommentAdded(post.id, comment)}
+                        />
                     </div>
                 ))}
             </div>
