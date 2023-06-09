@@ -7,7 +7,7 @@ const DeletePost = ({ postId, token, onDelete }) => {
             await axios.delete(
                 `https://brivity-react-exercise.herokuapp.com/posts/${postId}`,
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { Authorization: token },
                 }
             );
             onDelete(); // Call the onDelete function passed as a prop

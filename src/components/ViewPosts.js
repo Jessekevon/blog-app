@@ -14,7 +14,7 @@ const ViewPosts = ({ token }) => {
             const response = await axios.get(
                 'https://brivity-react-exercise.herokuapp.com/posts',
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { Authorization: token },
                 }
             );
             const { data } = response;

@@ -11,13 +11,13 @@ import PostDetails from './components/PostDetails'; // Import the PostDetails co
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [jwtToken, setJwtToken] = useState('');
+  const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
     console.log('Fetched token:', token); // Check the fetched token
-    setJwtToken(token);
+    setToken(token);
     if (token) {
       setLoggedIn(true);
     }
@@ -25,7 +25,7 @@ function App() {
 
   const handleSignOut = () => {
     setLoggedIn(false);
-    setJwtToken('');
+    setToken('');
     setUserName('');
     localStorage.removeItem('token');
   };
@@ -40,16 +40,16 @@ function App() {
           {loggedIn && (
             <>
               <Route
-                path="/create"
-                element={<CreatePost token={jwtToken} />}
+                path="/posts"
+                element={<ViewPosts token={token} isAuthenticated={loggedIn} />}
               />
               <Route
                 path="/posts"
-                element={<ViewPosts token={jwtToken} isAuthenticated={loggedIn} />}
+                element={<ViewPosts token={token} isAuthenticated={loggedIn} />}
               />
               <Route
                 path="/edit/:postId"
-                element={<EditPost token={jwtToken} />}
+                element={<EditPost token={token} />}
               />
             </>
           )}
@@ -59,11 +59,11 @@ function App() {
             <>
               <Route
                 path="/"
-                element={<HomePage token={jwtToken} />}
+                element={<HomePage token={token} />}
               />
               <Route
                 path="/posts/:post_id" // Add a route for /posts/:post_id
-                element={<PostDetails token={jwtToken} />}
+                element={<PostDetails token={token} />}
               />
             </>
           )}

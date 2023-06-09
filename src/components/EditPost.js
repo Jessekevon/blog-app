@@ -11,7 +11,7 @@ const EditPost = ({ postId, token }) => {
                 const response = await axios.get(
                     `https://brivity-react-exercise.herokuapp.com/posts/${postId}`,
                     {
-                        headers: { Authorization: `Bearer ${token}` },
+                        headers: { Authorization: token },
                     }
                 );
                 const { title, content } = response.data.post;
@@ -37,7 +37,7 @@ const EditPost = ({ postId, token }) => {
                     }
                 },
                 {
-                    headers: { Authorization: `Bearer ${token}` },
+                    headers: { Authorization: token },
                 }
             );
             // Set any state for editing mode if needed
