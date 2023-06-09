@@ -47,7 +47,7 @@ function App() {
                 element={<ViewPosts token={token} isAuthenticated={loggedIn} />}
               />
               <Route
-                path="/edit/:postId"
+                path="/edit/:post_id"
                 element={<EditPost token={token} />}
               />
             </>

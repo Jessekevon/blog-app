@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DeletePost from './DeletePost';
 import AddComment from './AddComment';
@@ -104,12 +104,12 @@ const PostDetails = ({ token }) => {
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-semibold">{post.title}</h2>
                         <div>
-                            <button
+                            <Link
+                                to={`/edit/${post_id}`}
                                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                                onClick={handleEditPost}
                             >
                                 Edit
-                            </button>
+                            </Link>
                             <DeletePost postId={post_id} token={token} onDelete={handlePostDeleted} />
                         </div>
                     </div>

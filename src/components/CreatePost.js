@@ -47,26 +47,33 @@ const CreatePost = ({ token }) => {
     };
 
     return (
-        <div>
-            <h2>Create Post</h2>
-            {error && <p className="error">{error}</p>}
+        <div className="max-w-lg mx-auto mt-8">
+            <h2 className="text-2xl text-white font-semibold mb-4">Create Post</h2>
+            {error && <p className="text-red-500 mb-4">{error}</p>}
             <form onSubmit={handleSubmit}>
-                <div>
-                    <label>Title:</label>
+                <div className="mb-4">
+                    <label className="text-white">Title:</label>
                     <input
                         type="text"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
+                        className="w-full py-2 px-4 mt-1 rounded border border-gray-300 focus:outline-none focus:border-blue-500"
                     />
                 </div>
-                <div>
-                    <label>Body:</label>
+                <div className="mb-4">
+                    <label className="text-white">Body:</label>
                     <textarea
                         value={body}
                         onChange={(e) => setBody(e.target.value)}
+                        className="w-full py-2 px-4 mt-1 rounded border border-gray-300 h-40 resize-none focus:outline-none focus:border-blue-500"
                     ></textarea>
                 </div>
-                <button type="submit">Submit</button>
+                <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                >
+                    Submit
+                </button>
             </form>
         </div>
     );
