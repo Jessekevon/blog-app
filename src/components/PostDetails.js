@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import DeletePost from './DeletePost';
 import AddComment from './AddComment';
@@ -8,7 +8,7 @@ import AddComment from './AddComment';
 const API_KEY = 'cLDno3CrKltLF8YOqniPP21W9zwQSokdjiQPyNrwaqKzLjj1hjDUrdwV';
 const API_ENDPOINT = 'https://api.pexels.com/v1/search?query=';
 
-const PostDetails = ({ postId, token }) => {
+const PostDetails = ({ token }) => {
     const { post_id } = useParams();
     const navigate = useNavigate();
     const [post, setPost] = useState(null);
@@ -88,6 +88,10 @@ const PostDetails = ({ postId, token }) => {
         return <p>Error: {error}</p>;
     }
 
+    if (!post) {
+        return null; // Return null or a loading indicator if the post is not available
+    }
+
     return (
         <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div className="bg-white rounded-lg shadow-md">
@@ -97,30 +101,33 @@ const PostDetails = ({ postId, token }) => {
                     className="h-48 w-full object-cover rounded-t-lg"
                 />
                 <div className="p-6">
-                    <h2 className="text-xl font-semibold mb-4">{post.title}</h2>
-                    <p className="text-gray-600">{post.content}</p>
-                    <AddComment token={token} postId={postId} onCommentAdded={handleCommentAdded} />
-                    <div>
-                        <h3>Comments</h3>
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-xl font-semibold">{post.title}</h2>
+                        <div>
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                onClick={handleEditPost}
+                            >
+                                Edit
+                            </button>
+                            <DeletePost postId={post_id} token={token} onDelete={handlePostDeleted} />
+                        </div>
+                    </div>
+                    <p className="text-gray-600 mb-4">{post.content}</p>
+                    <div className="border-t border-gray-300 py-4">
+                        <h3 className="text-lg font-semibold mb-2">Comments</h3>
                         {comments.length > 0 ? (
                             comments.map((comment) => (
-                                <div key={comment.id}>
-                                    <p>{comment.content}</p>
-                                    <p>By: {comment.user.display_name}</p>
-                                    <hr />
+                                <div key={comment.id} className="mb-4">
+                                    <p className="text-gray-600 mb-1">{comment.content}</p>
+                                    <p className="text-gray-500">By: {comment.user.display_name}</p>
                                 </div>
                             ))
                         ) : (
                             <p>No comments yet.</p>
                         )}
                     </div>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4 mr-4"
-                        onClick={handleEditPost}
-                    >
-                        Edit
-                    </button>
-                    <DeletePost postId={post_id} token={token} onDelete={handlePostDeleted} />
+                    <AddComment token={token} postId={post_id} onCommentAdded={handleCommentAdded} />
                 </div>
             </div>
         </div>

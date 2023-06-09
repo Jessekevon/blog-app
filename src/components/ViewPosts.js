@@ -3,7 +3,6 @@ import axios from 'axios';
 import Post from './Post';
 import CreatePost from './CreatePost';
 import { Link, useNavigate } from 'react-router-dom';
-import AddComment from './AddComment';
 
 const ViewPosts = ({ token }) => {
     const [posts, setPosts] = useState([]);
@@ -13,7 +12,7 @@ const ViewPosts = ({ token }) => {
     const fetchPosts = async () => {
         try {
             const response = await axios.get(
-                'https://brivity-react-exercise.herokuapp.com/posts',
+                'https://brivity-react-exercise.herokuapp.com/posts?_sort=createdAt:asc',
                 {
                     headers: { Authorization: token },
                 }
@@ -70,11 +69,6 @@ const ViewPosts = ({ token }) => {
                         <Link to={`/posts/${post.id}`}>
                             <Post post={post} />
                         </Link>
-                        <AddComment
-                            token={token}
-                            postId={post.id}
-                            onCommentAdded={(comment) => handleCommentAdded(post.id, comment)}
-                        />
                     </div>
                 ))}
             </div>

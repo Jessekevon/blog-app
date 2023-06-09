@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Header from './components/Header';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
-import CreatePost from './components/CreatePost';
 import ViewPosts from './components/ViewPosts';
 import HomePage from './components/HomePage';
 import EditPost from './components/EditPost';

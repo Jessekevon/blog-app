@@ -90,15 +90,24 @@ const AddComment = ({ token, postId, onCommentAdded }) => {
     };
 
     return (
-        <div>
-            <h3>Add a Comment</h3>
-            {error && <p>Error: {error}</p>}
+        <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-2">Add a Comment</h3>
+            {error && <p className="text-red-500 mb-2">Error: {error}</p>}
             <form onSubmit={handleCommentSubmit}>
-                <textarea value={content} onChange={handleCommentChange} />
-                <button type="submit">Add Comment</button>
+                <textarea
+                    className="block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                    rows={4}
+                    value={content}
+                    onChange={handleCommentChange}
+                    placeholder="Write your comment..."
+                ></textarea>
+                <button
+                    type="submit"
+                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                >
+                    Add Comment
+                </button>
             </form>
-
-            {/* Render the existing comments here and provide the edit and delete functionality */}
         </div>
     );
 };
