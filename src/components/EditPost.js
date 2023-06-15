@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
+// 1 - It receives the postId and token as props from its parent component.
 const EditPost = ({ postId, token }) => {
+    // 2 - It uses the useParams hook from React Router to extract the post_id parameter from the URL.
     const { post_id } = useParams();
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
-
+    // 3 - The useEffect hook is used to fetch the post data from the server when the component mounts.
     useEffect(() => {
         const fetchPost = async () => {
             try {
@@ -31,6 +32,7 @@ const EditPost = ({ postId, token }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // 4 - Send a PATCH request to update the post with the new title and content
             await axios.patch(
                 `https://brivity-react-exercise.herokuapp.com/posts/${post_id}`,
                 {
@@ -43,8 +45,8 @@ const EditPost = ({ postId, token }) => {
                     headers: { Authorization: token },
                 }
             );
-            navigate(`/posts/${post_id}`);
-            // Set any state for editing mode if needed
+            // 5 - Navigate to the updated post's page
+            navigate(`/posts/${post_id}`); 
         } catch (error) {
             console.error('Failed to edit post', error);
         }

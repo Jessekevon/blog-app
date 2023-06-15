@@ -4,13 +4,15 @@ import axios from 'axios';
 const DeletePost = ({ postId, token, onDelete }) => {
     const handleDelete = async () => {
         try {
+            // 2 - Send a DELETE request to delete the specified post
             await axios.delete(
                 `https://brivity-react-exercise.herokuapp.com/posts/${postId}`,
                 {
                     headers: { Authorization: token },
                 }
             );
-            onDelete(); // Call the onDelete function passed as a prop
+            // 3 - Call the onDelete function passed as a prop
+            onDelete(); 
         } catch (error) {
             console.error('Failed to delete post', error);
         }

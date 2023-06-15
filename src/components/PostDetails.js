@@ -4,19 +4,22 @@ import axios from 'axios';
 import DeletePost from './DeletePost';
 import AddComment from './AddComment';
 
-
+// 1 - Pexels API key and endpoint for fetching random images
 const API_KEY = 'cLDno3CrKltLF8YOqniPP21W9zwQSokdjiQPyNrwaqKzLjj1hjDUrdwV';
 const API_ENDPOINT = 'https://api.pexels.com/v1/search?query=';
-
+// 2 - token prop for authentication purposes
 const PostDetails = ({ token }) => {
+    // 3 - useParams to extract the post_id from the URL path and useNavigate to manage navigation.
     const { post_id } = useParams();
     const navigate = useNavigate();
+    // 4 - state variables
     const [post, setPost] = useState(null);
     const [comments, setComments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [imageUrl, setImageUrl] = useState('');
 
+    // 5 - Fetch the posts, comments data from the server and images from pexel
     const fetchPost = async () => {
         try {
             const response = await axios.get(
@@ -61,7 +64,7 @@ const PostDetails = ({ token }) => {
             console.log('Failed to fetch random image', error);
         }
     };
-
+    // Fetch post data, comments, and random image on component mount
     useEffect(() => {
         fetchPost();
         fetchRandomImage();

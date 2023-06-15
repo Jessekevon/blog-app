@@ -9,10 +9,11 @@ import EditPost from './components/EditPost';
 import PostDetails from './components/PostDetails'; // Import the PostDetails component
 
 function App() {
+  // 1 - state vars
   const [loggedIn, setLoggedIn] = useState(false);
   const [token, setToken] = useState('');
   const [userName, setUserName] = useState('');
-
+  // 2 - Check the fetched token
   useEffect(() => {
     const token = localStorage.getItem('token');
     console.log('Fetched token:', token); // Check the fetched token
@@ -21,14 +22,14 @@ function App() {
       setLoggedIn(true);
     }
   }, []);
-
+  // 3 - handle sign out
   const handleSignOut = () => {
     setLoggedIn(false);
     setToken('');
     setUserName('');
     localStorage.removeItem('token');
   };
-
+  // 4 - render router component
   return (
     <div>
       <Router>
